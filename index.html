@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рисовалка</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        canvas { border: 2px solid black; margin-top: 10px; }
+        button { margin: 5px; padding: 10px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <h1>Онлайн-рисовалка 🎨</h1>
+    <canvas id="canvas" width="500" height="400"></canvas><br>
+    <button onclick="setTool('draw')">Карандаш ✏️</button>
+    <button onclick="setTool('erase')">Ластик 🩹</button>
+    <button onclick="clearCanvas()">Очистить 🗑</button>
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        let drawing = false, tool = "draw";
+        canvas.addEventListener("mousedown", () => drawing = true);
+        canvas.addEventListener("mouseup", () => drawing = false);
+        canvas.addEventListener("mousemove", draw);
+        function draw(e) {
+            if (!drawing) return;
+            ctx.fillStyle = tool === "draw" ? "black" : "white";
+            ctx.beginPath();
+            ctx.arc(e.offsetX, e.offsetY, tool === "draw" ? 3 : 10, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        function setTool(t) { tool = t; }
+        function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+    </script>
+</body>
+</html>
