@@ -20,10 +20,12 @@
             background: black;
             cursor: crosshair;
         }
-        .buttons {
+        .controls {
             margin-top: 10px;
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         button {
             padding: 8px 15px;
@@ -35,12 +37,17 @@
         }
         .clear { background: crimson; color: white; }
         .save { background: limegreen; color: black; }
+        .color-picker, .size-picker {
+            padding: 5px;
+        }
     </style>
 </head>
 <body>
     <h1>🎨 Рисовалка</h1>
     <canvas id="canvas" width="800" height="500"></canvas>
-    <div class="buttons">
+    <div class="controls">
+        <input type="color" id="color" class="color-picker" value="#ffffff">
+        <input type="range" id="size" class="size-picker" min="1" max="20" value="4">
         <button class="clear" onclick="clearCanvas()">Очистить</button>
         <button class="save" onclick="saveCanvas()">Сохранить</button>
     </div>
@@ -49,6 +56,16 @@
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
         let painting = false;
+        let color = document.getElementById("color").value;
+        let size = document.getElementById("size").value;
+
+        document.getElementById("color").addEventListener("change", (e) => {
+            color = e.target.value;
+        });
+
+        document.getElementById("size").addEventListener("input", (e) => {
+            size = e.target.value;
+        });
 
         function startPosition(e) {
             painting = true;
@@ -60,14 +77,15 @@
         }
         function draw(e) {
             if (!painting) return;
-            ctx.lineWidth = 4;
+            ctx.lineWidth = size;
             ctx.lineCap = "round";
-            ctx.strokeStyle = "white";
+            ctx.strokeStyle = color;
 
-            ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
             ctx.stroke();
             ctx.beginPath();
-            ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
         }
 
         function clearCanvas() {
@@ -87,3 +105,4 @@
     </script>
 </body>
 </html>
+
